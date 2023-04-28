@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "digital-assist-ant"
+version = "0.0.1"
+authors = [
+  { name="Shubh", email="shubhbpl@gmail.com" },
+]
+description = "Your Assist-ant"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = []
+
+[project.urls]
+"Homepage" = "https://github.com/shubhvjain/ant"
