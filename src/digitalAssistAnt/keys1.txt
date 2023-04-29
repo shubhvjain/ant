@@ -1,0 +1,158 @@
+.[main-util]
+>[all imports for util]
+>[declerations]
+>[get absolute path]
+>[check for file or folder]
+>[load config]
+>[formatted strings]
+
+.[all imports for util]
+import os
+import json 
+import re
+
+.[declerations]
+CONFIGPATH="~/digitalAssistAnt/config.json"
+
+.[get absolute path]
+def getAbsolutePath(somePath):
+    return os.path.expanduser(somePath)
+
+
+.[load config]
+def loadConfigFile():
+>[get absolute path of config file]
+>[try opening file and converting it to dictionary]
+    
+
+.[get absolute path of config file]
+    pathToFile =  getAbsolutePath(CONFIGPATH)
+
+.[try opening file and converting it to dictionary]
+    try:
+        with open(pathToFile, 'r') as f:
+            data = f.read()
+            config = json.loads(data)
+            return config
+    except (FileNotFoundError): 
+        print("Config file not found at path ",CONFIGPATH)
+        raise FileNotFoundError
+
+.[check for file or folder]
+def checkIfPathExists(path):
+    absPath = getAbsolutePath(path)
+    pathCheck = os.path.exists(absPath)
+    return pathCheck
+
+
+.[formatted strings]
+def formatString(format,input):
+    if format == "single-nospace-dashsymbols":
+        print()
+        str = re.sub(r'[^a-zA-Z0-9 -]',r'',input)
+        str = str.replace(" ","-")
+        return str
+    return input
+
+
+# print(formatString("single-nospace-dashsymbols","sample - %6^&*() sdsd"))
+
+
+======================
+
+Managing keys centrally 
+
+Precheck :
+- key folder is setup
+- the location of the key folder is available in the config file
+
+
+.[main-keyfile]
+>[all imports for keys]
+>[prechecks]
+>[get key]
+>[set key]
+
+>[test]
+
+.[all imports for keys]
+import os
+import util
+
+
+.[prechecks]
+def precheck():
+    try:
+        >[get config file]
+        >[check if keys folder exists]
+    except:
+        print("Unable to fetch keys. Prechecks fail. Check the path to the keys folder in your configs")
+
+
+.[get config file]
+        config = util.loadConfigFile()  
+
+
+.[check if keys folder exists]
+        keyFolderPathExists  = util.checkIfPathExists(config['keys']['path'])
+        if(keyFolderPathExists):
+            return True
+        else:
+            raise FileNotFoundError      
+      
+
+.[get key]
+def getKey(title):
+>[do a precheck]
+>[get config file 1]
+>[generate key file path]
+>[check if that file already exists]
+>[return file content]
+
+
+.[do a precheck]
+    precheck()
+
+.[get config file 1]
+    config = util.loadConfigFile() 
+
+.[generate key file path]
+    keyFilePath = config['keys']['path']+ "/"+ util.formatString("single-nospace-dashsymbols",title)+".txt"
+    absFilePath = util.getAbsolutePath(keyFilePath)
+
+.[check if that file already exists]
+    keyFileExists = util.checkIfPathExists(keyFilePath)
+
+.[return file content]
+    if keyFileExists:
+        f = open(absFilePath,"r")
+        firstLine = f.readline()
+        return firstLine
+    else:
+        raise Exception("KeyNotFound") 
+
+.[set key]
+def setKey(title,value):
+>[do a precheck]
+>[get config file 1]
+>[generate key file path]
+>[check if that file already exists]
+>[generate new key file]
+
+
+.[generate new key file]
+    if keyFileExists:
+        raise Exception("keyAlreadyExists")
+    else:
+        f = open(absFilePath, "w")
+        f.write(value)
+        f.close()
+        return "New file created : "+ keyFilePath
+
+.[create a new file]
+    print()
+
+.[test] 
+# precheck()
+# print(setKey("sample thing 1","hahahaha"))
+# print(getKey("sample thing 1"))
